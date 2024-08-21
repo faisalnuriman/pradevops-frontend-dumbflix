@@ -22,7 +22,7 @@ pipeline {
                     $class: 'GitSCM',
                     branches: [[name: '*/main']],
                     userRemoteConfigs: [[
-                        url: 'https://github.com/faisalnuriman/frontend-dumbflix.git',
+                        url: 'https://github.com/faisalnuriman/frontend02-dumbflix.git',
                         credentialsId: "${GITHUB_CREDENTIALS_ID}"
                     ]]
                 ])
