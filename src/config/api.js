@@ -1,7 +1,7 @@
 import axios from 'axios';
 // Set config defaults when creating the instance
 export const API = axios.create({
-	baseURL: 'https://api.cocofuture.com/api/v1'
+	baseURL: 'https://back-end.nx01.my.id/api/v1'
 });
 
 // Alter defaults after instance has been created
