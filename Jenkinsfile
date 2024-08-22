@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'frontend-node'
+        label 'frontend02-node'
     }
 
     environment {
