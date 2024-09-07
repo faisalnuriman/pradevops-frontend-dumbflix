@@ -1,18 +1,17 @@
 pipeline {
     agent {
-        label 'frontend02-node'
+        label 'frontend-node' // Menggunakan agen dengan label 'frontend-node'
     }
 
     environment {
         SLACK_CHANNEL = '#jenkins'
-        SLACK_CREDENTIAL_ID = 'slack-notification-token'
-        GITHUB_CREDENTIALS_ID = 'github-fine-grained-token'
-        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
-        SSH_CREDENTIALS_ID = 'front-end-ssh'
+        SLACK_CREDENTIAL_ID = 'slack-notification'
+        GITHUB_CREDENTIALS_ID = 'github-credentials'
+        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
     }
 
     triggers {
-        pollSCM('* * * * *')
+        pollSCM('* * * * *') // Polling SCM setiap menit
     }
 
     stages {
@@ -22,7 +21,7 @@ pipeline {
                     $class: 'GitSCM',
                     branches: [[name: '*/main']],
                     userRemoteConfigs: [[
-                        url: 'https://github.com/faisalnuriman/frontend02-dumbflix.git',
+                        url: 'git@github.com:faisalnuriman/pradevops-frontend-dumbflix.git',
                         credentialsId: "${GITHUB_CREDENTIALS_ID}"
                     ]]
                 ])
@@ -32,7 +31,7 @@ pipeline {
             steps {
                 script {
                     VERSION = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-                    sh "docker build -t faisalnuriman/frontend-server:${VERSION} -f Dockerfile ."
+                    sh "docker build -t faisalnuriman/frontend-pradevops:${VERSION} -f Dockerfile ."
                 }
             }
         }
@@ -40,9 +39,9 @@ pipeline {
             steps {
                 script {
                     withDockerRegistry([credentialsId: "${DOCKER_CREDENTIALS_ID}", url: 'https://index.docker.io/v1/']) {
-                        sh "docker tag faisalnuriman/frontend-server:${VERSION} faisalnuriman/frontend-server:latest"
-                        sh "docker push faisalnuriman/frontend-server:${VERSION}"
-                        sh "docker push faisalnuriman/frontend-server:latest"
+                        sh "docker tag faisalnuriman/frontend-pradevops:${VERSION} faisalnuriman/frontend-pradevops:latest"
+                        sh "docker push faisalnuriman/frontend-pradevops:${VERSION}"
+                        sh "docker push faisalnuriman/frontend-pradevops:latest"
                     }
                 }
             }
@@ -53,8 +52,8 @@ pipeline {
                     sh '''
                     docker stop frontend-dumbflix-container || true
                     docker rm frontend-dumbflix-container || true
-                    docker pull faisalnuriman/frontend-server:latest
-                    docker run -d --name frontend-dumbflix-container -p 3000:3000 faisalnuriman/frontend-server:latest
+                    docker pull faisalnuriman/frontend-pradevops:latest
+                    docker run -d --name frontend-dumbflix-container -p 3000:3000 faisalnuriman/frontend-pradevops:latest
                     '''
                 }
             }
