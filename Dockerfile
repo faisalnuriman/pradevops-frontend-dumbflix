@@ -1,20 +1,26 @@
 # Menggunakan image Node.js sebagai base image
-FROM node:10.24.1
+FROM node:14
 
 # Menetapkan direktori kerja di dalam container
 WORKDIR /usr/src/app
 
-# Menyalin file package.json dan package-lock.json ke dalam direktori kerja
+# Menyalin package.json dan package-lock.json
 COPY package*.json ./
 
 # Menginstal dependensi aplikasi
 RUN npm install
 
-# Menyalin semua file aplikasi ke dalam direktori kerja
+# Menginstal PM2 secara global
+RUN npm install -g pm2
+
+# Menyalin sisa kode aplikasi ke dalam container
 COPY . .
 
-# Mengekspos port 3000
+# Membangun aplikasi untuk produksi
+RUN npm run build
+
+# Menyediakan port untuk aplikasi
 EXPOSE 3000
 
-# Menjalankan aplikasi
-CMD ["npm", "start"]
+# Menjalankan aplikasi menggunakan PM2
+CMD ["pm2-runtime", "start", "npm", "--", "start"]
