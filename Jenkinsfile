@@ -50,10 +50,10 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    docker stop frontend-dumbflix-container || true
-                    docker rm frontend-dumbflix-container || true
+                    docker stop pradevops-frontend-dumbflix-container-new || true
+                    docker rm pradevops-frontend-dumbflix-container-new || true
                     docker pull faisalnuriman/frontend-pradevops:latest
-                    docker run -d --name frontend-dumbflix-container -p 3000:3000 faisalnuriman/frontend-pradevops:latest
+                    docker run -d --name pradevops-frontend-dumbflix-container-new -p 3000:3000 faisalnuriman/frontend-pradevops:latest
                     '''
                 }
             }
